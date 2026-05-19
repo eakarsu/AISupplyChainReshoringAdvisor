@@ -31,7 +31,10 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// Protected routes — auth required on all /api/* except /auth and /health
+// Custom Views (public — mounted BEFORE auth + BEFORE 404)
+app.use('/api/custom-views', require('./routes/customViews'));
+
+// Protected routes — auth required on all /api/* except /auth, /health, /custom-views
 app.use('/api', authMiddleware);
 
 app.use('/api/suppliers', require('./routes/suppliers'));

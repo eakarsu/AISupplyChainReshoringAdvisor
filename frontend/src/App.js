@@ -14,6 +14,7 @@ import LaborCostForecast from './pages/LaborCostForecast';
 import SiteRiskScore from './pages/SiteRiskScore';
 import TariffImpactForecast from './pages/TariffImpactForecast';
 import SupplyChainResilienceScore from './pages/SupplyChainResilienceScore';
+import CustomViewsPage from './pages/CustomViewsPage';
 // === Batch 08 Gaps & Frontend Mounts ===
 import CfLaborArbitrageModelingComparingWageProductivityTraining from './pages/CfLaborArbitrageModelingComparingWageProductivityTraining'
 import CfSupplyChainResilienceScoringQuantifyingSingleSourcing from './pages/CfSupplyChainResilienceScoringQuantifyingSingleSourcing'
@@ -50,6 +51,11 @@ const FEATURES = [
 ];
 
 export { FEATURES };
+
+// Local pass-through guard — token presence is already enforced at /* level in <App/>
+function ProtectedRoute({ children }) {
+  return children;
+}
 
 function AppLayout() {
   const navigate = useNavigate();
@@ -167,6 +173,14 @@ function AppLayout() {
               <span className="nav-icon">🧱</span>
               {!sidebarCollapsed && <span>Resilience Score</span>}
             </button>
+            <button
+              data-testid="nav-custom-views"
+              className={`nav-item ${isActive('custom-views') ? 'active' : ''}`}
+              onClick={() => navigate('/custom-views')}
+            >
+              <span className="nav-icon">📐</span>
+              {!sidebarCollapsed && <span>Reshoring Views</span>}
+            </button>
           </div>
         </nav>
 
@@ -203,6 +217,7 @@ function AppLayout() {
           <Route path="/site-risk-score" element={<SiteRiskScore />} />
           <Route path="/tariff-impact-forecast" element={<TariffImpactForecast />} />
           <Route path="/supply-chain-resilience-score" element={<SupplyChainResilienceScore />} />
+          <Route path="/custom-views" element={<CustomViewsPage />} />
           {/* // === Batch 08 Gaps & Frontend Mounts === */}
       <Route path="/cf-labor-arbitrage-modeling-comparing-wage-productivity-training-costs" element={<ProtectedRoute><CfLaborArbitrageModelingComparingWageProductivityTraining /></ProtectedRoute>} />
       <Route path="/cf-supply-chain-resilience-scoring-quantifying-single-sourcing-and-geopolitical" element={<ProtectedRoute><CfSupplyChainResilienceScoringQuantifyingSingleSourcing /></ProtectedRoute>} />
