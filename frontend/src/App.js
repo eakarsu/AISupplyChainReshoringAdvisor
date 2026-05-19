@@ -7,6 +7,30 @@ import Dashboard from './pages/Dashboard';
 import FeaturePage from './pages/FeaturePage';
 import AiCenter from './pages/AiCenter';
 import DetailPage from './pages/DetailPage';
+import ReshoringDecision from './pages/ReshoringDecision';
+import ScenarioBundles from './pages/ScenarioBundles';
+import GeographicRisk from './pages/GeographicRisk';
+import LaborCostForecast from './pages/LaborCostForecast';
+import SiteRiskScore from './pages/SiteRiskScore';
+import TariffImpactForecast from './pages/TariffImpactForecast';
+import SupplyChainResilienceScore from './pages/SupplyChainResilienceScore';
+import CustomViewsPage from './pages/CustomViewsPage';
+// === Batch 08 Gaps & Frontend Mounts ===
+import CfLaborArbitrageModelingComparingWageProductivityTraining from './pages/CfLaborArbitrageModelingComparingWageProductivityTraining'
+import CfSupplyChainResilienceScoringQuantifyingSingleSourcing from './pages/CfSupplyChainResilienceScoringQuantifyingSingleSourcing'
+import CfRegulatoryComplexityAssessmentFlaggingEsgFtaReporting from './pages/CfRegulatoryComplexityAssessmentFlaggingEsgFtaReporting'
+import CfBuildVsPartnerOptimizationComparingCapexOpex from './pages/CfBuildVsPartnerOptimizationComparingCapexOpex'
+import CfMonteCarloScenarioPlanningForTariffLabor from './pages/CfMonteCarloScenarioPlanningForTariffLabor'
+import CfNearshoringSpecificRecommendationEngineForMexicoCanada from './pages/CfNearshoringSpecificRecommendationEngineForMexicoCanada'
+import GapAiEndpointsUnderEnumeratedShouldExposeLabor from './pages/GapAiEndpointsUnderEnumeratedShouldExposeLabor'
+import GapNoScenarioComparisonEndpoint from './pages/GapNoScenarioComparisonEndpoint'
+import GapNoConversationalReshoringAdvisorChat from './pages/GapNoConversationalReshoringAdvisorChat'
+import GapNoIntegrationsWithPublicDataApisBls from './pages/GapNoIntegrationsWithPublicDataApisBls'
+import GapNoScenarioModelingComparisonUiRoute from './pages/GapNoScenarioModelingComparisonUiRoute'
+import GapNoFeasibilityScoringDecisionTree from './pages/GapNoFeasibilityScoringDecisionTree'
+import GapNoProjectManagementForReshoringInitiatives from './pages/GapNoProjectManagementForReshoringInitiatives'
+import GapNoWebhooksOrExternalNotifications from './pages/GapNoWebhooksOrExternalNotifications'
+import GapNoMultiTenantClientWorkspaceSeparation from './pages/GapNoMultiTenantClientWorkspaceSeparation'
 
 const FEATURES = [
   { key: 'suppliers', label: 'Supplier Discovery', icon: '🏭', api: '/suppliers', color: '#3b82f6' },
@@ -27,6 +51,11 @@ const FEATURES = [
 ];
 
 export { FEATURES };
+
+// Local pass-through guard — token presence is already enforced at /* level in <App/>
+function ProtectedRoute({ children }) {
+  return children;
+}
 
 function AppLayout() {
   const navigate = useNavigate();
@@ -95,6 +124,63 @@ function AppLayout() {
               <span className="nav-icon">🤖</span>
               {!sidebarCollapsed && <span>AI Command Center</span>}
             </button>
+            <button
+              className={`nav-item ${isActive('reshoring-decision') ? 'active' : ''}`}
+              onClick={() => navigate('/reshoring-decision')}
+            >
+              <span className="nav-icon">🏭</span>
+              {!sidebarCollapsed && <span>Reshoring Decision</span>}
+            </button>
+            <button
+              className={`nav-item ${isActive('scenario-bundles') ? 'active' : ''}`}
+              onClick={() => navigate('/scenario-bundles')}
+            >
+              <span className="nav-icon">🎯</span>
+              {!sidebarCollapsed && <span>Scenario Bundles</span>}
+            </button>
+            <button
+              className={`nav-item ${isActive('geographic-risk') ? 'active' : ''}`}
+              onClick={() => navigate('/geographic-risk')}
+            >
+              <span className="nav-icon">🗺️</span>
+              {!sidebarCollapsed && <span>Geographic Risk</span>}
+            </button>
+            <button
+              className={`nav-item ${isActive('labor-cost-forecast') ? 'active' : ''}`}
+              onClick={() => navigate('/labor-cost-forecast')}
+            >
+              <span className="nav-icon">💼</span>
+              {!sidebarCollapsed && <span>Labor Cost Forecast</span>}
+            </button>
+            <button
+              className={`nav-item ${isActive('site-risk-score') ? 'active' : ''}`}
+              onClick={() => navigate('/site-risk-score')}
+            >
+              <span className="nav-icon">🛡️</span>
+              {!sidebarCollapsed && <span>Site Risk Score</span>}
+            </button>
+            <button
+              className={`nav-item ${isActive('tariff-impact-forecast') ? 'active' : ''}`}
+              onClick={() => navigate('/tariff-impact-forecast')}
+            >
+              <span className="nav-icon">🛃</span>
+              {!sidebarCollapsed && <span>Tariff Impact</span>}
+            </button>
+            <button
+              className={`nav-item ${isActive('supply-chain-resilience-score') ? 'active' : ''}`}
+              onClick={() => navigate('/supply-chain-resilience-score')}
+            >
+              <span className="nav-icon">🧱</span>
+              {!sidebarCollapsed && <span>Resilience Score</span>}
+            </button>
+            <button
+              data-testid="nav-custom-views"
+              className={`nav-item ${isActive('custom-views') ? 'active' : ''}`}
+              onClick={() => navigate('/custom-views')}
+            >
+              <span className="nav-icon">📐</span>
+              {!sidebarCollapsed && <span>Reshoring Views</span>}
+            </button>
           </div>
         </nav>
 
@@ -124,7 +210,31 @@ function AppLayout() {
             <Route key={`${f.key}-detail`} path={`/${f.key}/:id`} element={<DetailPage feature={f} />} />
           ))}
           <Route path="/ai-center" element={<AiCenter />} />
-          <Route path="*" element={<Navigate to="/dashboard" />} />
+          <Route path="/reshoring-decision" element={<ReshoringDecision />} />
+          <Route path="/scenario-bundles" element={<ScenarioBundles />} />
+          <Route path="/geographic-risk" element={<GeographicRisk />} />
+          <Route path="/labor-cost-forecast" element={<LaborCostForecast />} />
+          <Route path="/site-risk-score" element={<SiteRiskScore />} />
+          <Route path="/tariff-impact-forecast" element={<TariffImpactForecast />} />
+          <Route path="/supply-chain-resilience-score" element={<SupplyChainResilienceScore />} />
+          <Route path="/custom-views" element={<CustomViewsPage />} />
+          {/* // === Batch 08 Gaps & Frontend Mounts === */}
+      <Route path="/cf-labor-arbitrage-modeling-comparing-wage-productivity-training-costs" element={<ProtectedRoute><CfLaborArbitrageModelingComparingWageProductivityTraining /></ProtectedRoute>} />
+      <Route path="/cf-supply-chain-resilience-scoring-quantifying-single-sourcing-and-geopolitical" element={<ProtectedRoute><CfSupplyChainResilienceScoringQuantifyingSingleSourcing /></ProtectedRoute>} />
+      <Route path="/cf-regulatory-complexity-assessment-flagging-esg-fta-reporting-burden" element={<ProtectedRoute><CfRegulatoryComplexityAssessmentFlaggingEsgFtaReporting /></ProtectedRoute>} />
+      <Route path="/cf-build-vs-partner-optimization-comparing-capex-opex-vs-continued-outsourcing" element={<ProtectedRoute><CfBuildVsPartnerOptimizationComparingCapexOpex /></ProtectedRoute>} />
+      <Route path="/cf-monte-carlo-scenario-planning-for-tariff-labor-currency" element={<ProtectedRoute><CfMonteCarloScenarioPlanningForTariffLabor /></ProtectedRoute>} />
+      <Route path="/cf-nearshoring-specific-recommendation-engine-for-mexico-canada" element={<ProtectedRoute><CfNearshoringSpecificRecommendationEngineForMexicoCanada /></ProtectedRoute>} />
+      <Route path="/gap-ai-endpoints-under-enumerated-should-expose-labor-cost-prediction" element={<ProtectedRoute><GapAiEndpointsUnderEnumeratedShouldExposeLabor /></ProtectedRoute>} />
+      <Route path="/gap-no-scenario-comparison-endpoint" element={<ProtectedRoute><GapNoScenarioComparisonEndpoint /></ProtectedRoute>} />
+      <Route path="/gap-no-conversational-reshoring-advisor-chat" element={<ProtectedRoute><GapNoConversationalReshoringAdvisorChat /></ProtectedRoute>} />
+      <Route path="/gap-no-integrations-with-public-data-apis-bls-un" element={<ProtectedRoute><GapNoIntegrationsWithPublicDataApisBls /></ProtectedRoute>} />
+      <Route path="/gap-no-scenario-modeling-comparison-ui-route" element={<ProtectedRoute><GapNoScenarioModelingComparisonUiRoute /></ProtectedRoute>} />
+      <Route path="/gap-no-feasibility-scoring-decision-tree" element={<ProtectedRoute><GapNoFeasibilityScoringDecisionTree /></ProtectedRoute>} />
+      <Route path="/gap-no-project-management-for-reshoring-initiatives" element={<ProtectedRoute><GapNoProjectManagementForReshoringInitiatives /></ProtectedRoute>} />
+      <Route path="/gap-no-webhooks-or-external-notifications" element={<ProtectedRoute><GapNoWebhooksOrExternalNotifications /></ProtectedRoute>} />
+      <Route path="/gap-no-multi-tenant-client-workspace-separation" element={<ProtectedRoute><GapNoMultiTenantClientWorkspaceSeparation /></ProtectedRoute>} />
+      <Route path="*" element={<Navigate to="/dashboard" />} />
         </Routes>
       </main>
     </div>

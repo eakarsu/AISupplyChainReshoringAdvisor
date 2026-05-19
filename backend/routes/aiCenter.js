@@ -1,10 +1,20 @@
 const express = require('express');
 const router = express.Router();
+const rateLimit = require('express-rate-limit');
 const pool = require('../db');
-const { queryOpenRouter } = require('../services/openrouter');
+const { queryOpenRouter, parseAIJson } = require('../services/openrouter');
+
+const aiRateLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 20,
+  keyGenerator: (req) => req.user ? 'user:' + (req.user.id || req.user.userId) : req.ip,
+  message: { error: 'Too many AI requests. Limit is 20 per hour.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 // AI Chat - General supply chain assistant
-router.post('/chat', async (req, res) => {
+router.post('/chat', aiRateLimiter, async (req, res) => {
   try {
     const { message } = req.body;
     const systemPrompt = `You are an expert AI Supply Chain Reshoring Advisor. You help companies analyze, plan, and execute reshoring strategies for their supply chains. You have deep knowledge of:
@@ -34,7 +44,7 @@ Provide professional, actionable advice. Use clear formatting with headers and b
 });
 
 // AI Report Generator
-router.post('/generate-report', async (req, res) => {
+router.post('/generate-report', aiRateLimiter, async (req, res) => {
   try {
     const { reportType, parameters } = req.body;
     const systemPrompt = `You are a professional supply chain report generator. Create comprehensive, well-structured reports with executive summaries, key findings, data analysis, and actionable recommendations. Format the report professionally with clear sections, headers, and bullet points.`;
@@ -59,7 +69,7 @@ Include: Executive Summary, Key Findings, Detailed Analysis, Risk Assessment, Fi
 });
 
 // AI Scenario Simulator
-router.post('/simulate-scenario', async (req, res) => {
+router.post('/simulate-scenario', aiRateLimiter, async (req, res) => {
   try {
     const { scenario } = req.body;
     const systemPrompt = `You are a supply chain scenario simulation expert. Analyze hypothetical scenarios and predict outcomes based on supply chain dynamics, economic factors, and industry trends. Provide detailed impact analysis with probability assessments and recommended responses.`;
@@ -84,7 +94,7 @@ Provide: 1) Scenario Analysis 2) Probability of Outcomes 3) Impact Assessment (F
 });
 
 // AI Market Intelligence
-router.post('/market-intelligence', async (req, res) => {
+router.post('/market-intelligence', aiRateLimiter, async (req, res) => {
   try {
     const { query } = req.body;
     const systemPrompt = `You are a market intelligence analyst specializing in global supply chains, manufacturing, and reshoring trends. Provide data-driven market insights, competitive analysis, and strategic intelligence. Use specific examples and industry data points.`;
@@ -108,7 +118,7 @@ Include: 1) Market Overview 2) Key Trends 3) Competitive Landscape 4) Reshoring 
 });
 
 // AI Risk Monitor
-router.post('/risk-monitor', async (req, res) => {
+router.post('/risk-monitor', aiRateLimiter, async (req, res) => {
   try {
     const { context } = req.body;
     const systemPrompt = `You are a real-time supply chain risk monitoring AI. Analyze current conditions and identify emerging risks to supply chains. Provide risk alerts with severity levels, affected areas, and immediate action items.`;
