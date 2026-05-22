@@ -56,6 +56,7 @@ app.use('/api/ai-center', require('./routes/aiCenter'));
 app.use('/api/ai', require('./routes/aiAdvanced'));
 
 app.use('/api/labor-arbitrage', require('./routes/laborArbitrage')); app.use('/api/resilience-scoring', require('./routes/resilienceScoring')); app.use('/api/regulatory-complexity', require('./routes/regulatoryComplexity')); app.use('/api/build-vs-partner', require('./routes/buildVsPartner')); app.use('/api/monte-carlo-scenarios', require('./routes/monteCarloScenarios')); app.use('/api/nearshoring-recommender', require('./routes/nearshoringRecommender'));
+app.use('/api/port-drayage-constraint', require('./routes/portDrayageConstraint'));
 
 // === Batch 08 Gaps & Frontend Mounts ===
 app.use('/api/gap-ai-endpoints-under-enumerated-should-expose-labor-cost-prediction', require('./routes/gapAiEndpointsUnderEnumeratedShouldExposeLaborCostPrediction'));

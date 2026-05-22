@@ -15,6 +15,12 @@ import SiteRiskScore from './pages/SiteRiskScore';
 import TariffImpactForecast from './pages/TariffImpactForecast';
 import SupplyChainResilienceScore from './pages/SupplyChainResilienceScore';
 import CustomViewsPage from './pages/CustomViewsPage';
+import PortDrayageConstraint from './pages/PortDrayageConstraint';
+import CodexCustomVizFeature from './pages/CodexCustomVizFeature';
+import CodexOperationsFeature from './pages/CodexOperationsFeature';
+
+import TimelineView from './pages/TimelineView';
+
 // === Batch 08 Gaps & Frontend Mounts ===
 import CfLaborArbitrageModelingComparingWageProductivityTraining from './pages/CfLaborArbitrageModelingComparingWageProductivityTraining'
 import CfSupplyChainResilienceScoringQuantifyingSingleSourcing from './pages/CfSupplyChainResilienceScoringQuantifyingSingleSourcing'
@@ -181,6 +187,13 @@ function AppLayout() {
               <span className="nav-icon">📐</span>
               {!sidebarCollapsed && <span>Reshoring Views</span>}
             </button>
+            <button
+              className={`nav-item ${isActive('port-drayage-constraint') ? 'active' : ''}`}
+              onClick={() => navigate('/port-drayage-constraint')}
+            >
+              <span className="nav-icon">🚚</span>
+              {!sidebarCollapsed && <span>Port Drayage</span>}
+            </button>
           </div>
         </nav>
 
@@ -202,6 +215,10 @@ function AppLayout() {
 
       <main className="main-content">
         <Routes>
+        <Route path="/insights/timeline" element={<ProtectedRoute><TimelineView /></ProtectedRoute>} />
+        <Route path="/codex/custom-viz" element={<ProtectedRoute><CodexCustomVizFeature /></ProtectedRoute>} />
+        <Route path="/codex/operations" element={<ProtectedRoute><CodexOperationsFeature /></ProtectedRoute>} />
+
           <Route path="/dashboard" element={<Dashboard />} />
           {FEATURES.map(f => (
             <Route key={f.key} path={`/${f.key}`} element={<FeaturePage feature={f} />} />
@@ -218,6 +235,7 @@ function AppLayout() {
           <Route path="/tariff-impact-forecast" element={<TariffImpactForecast />} />
           <Route path="/supply-chain-resilience-score" element={<SupplyChainResilienceScore />} />
           <Route path="/custom-views" element={<CustomViewsPage />} />
+          <Route path="/port-drayage-constraint" element={<PortDrayageConstraint />} />
           {/* // === Batch 08 Gaps & Frontend Mounts === */}
       <Route path="/cf-labor-arbitrage-modeling-comparing-wage-productivity-training-costs" element={<ProtectedRoute><CfLaborArbitrageModelingComparingWageProductivityTraining /></ProtectedRoute>} />
       <Route path="/cf-supply-chain-resilience-scoring-quantifying-single-sourcing-and-geopolitical" element={<ProtectedRoute><CfSupplyChainResilienceScoringQuantifyingSingleSourcing /></ProtectedRoute>} />
