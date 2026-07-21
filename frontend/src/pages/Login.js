@@ -23,11 +23,6 @@ export default function Login({ onLogin }) {
     }
   };
 
-  const fillDemo = () => {
-    setEmail('admin@reshoring.ai');
-    setPassword('admin123');
-  };
-
   return (
     <div className="login-page">
       <div className="login-bg">
@@ -71,9 +66,6 @@ export default function Login({ onLogin }) {
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
 
-            <button type="button" className="demo-btn" onClick={fillDemo}>
-              Fill Demo Credentials
-            </button>
           </form>
 
           <div className="login-features">

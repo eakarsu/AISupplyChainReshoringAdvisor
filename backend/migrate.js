@@ -5,6 +5,7 @@
 const pool = require('./db');
 
 async function migrate() {
+  if (process.env.ALLOW_SCHEMA_MIGRATION !== '1' || !process.env.DATABASE_URL) throw new Error('ALLOW_SCHEMA_MIGRATION=1 and DATABASE_URL are required');
   const client = await pool.connect();
   try {
     console.log('Running migrations...');

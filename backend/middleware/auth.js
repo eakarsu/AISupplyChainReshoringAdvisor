@@ -9,12 +9,10 @@ function authMiddleware(req, res, next) {
   }
 
   const secret = process.env.JWT_SECRET;
-  if (!secret || secret === 'secret') {
-    console.warn('WARNING: Using weak JWT_SECRET. Set a strong secret in .env');
-  }
-
-  jwt.verify(token, secret || 'secret', (err, decoded) => {
+  if ((secret || '').length < 32) return res.status(503).json({ error: 'Secure authentication is not configured' });
+  jwt.verify(token, secret, { algorithms: ['HS256'] }, (err, decoded) => {
     if (err) return res.status(403).json({ error: 'Invalid or expired token.' });
+    if (!decoded.tenantId || !decoded.role || !decoded.subjectIds) return res.status(403).json({ error: 'Token lacks authorization context' });
     req.user = decoded;
     next();
   });
