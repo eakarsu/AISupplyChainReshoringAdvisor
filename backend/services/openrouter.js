@@ -1,7 +1,5 @@
 require('dotenv').config({ path: '../.env' });
 
-const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
-const DEFAULT_MODEL = 'anthropic/claude-3-5-sonnet-20241022';
 const TIMEOUT_MS = 30000;
 
 function parseAIJson(text) {
@@ -19,22 +17,15 @@ function parseAIJson(text) {
 
 async function queryOpenRouter(systemPrompt, userPrompt, options = {}) {
   const apiKey = process.env.OPENROUTER_API_KEY;
-  const model = process.env.OPENROUTER_MODEL || DEFAULT_MODEL;
-
-  if (!apiKey || apiKey === 'your_openrouter_api_key_here') {
-    return {
-      success: false,
-      error: 'OpenRouter API key not configured.',
-      fallback: true,
-      data: generateFallbackResponse(userPrompt),
-    };
-  }
+  const model = process.env.OPENROUTER_MODEL;
+  const baseUrl = String(process.env.OPENROUTER_BASE_URL || '').replace(/\/$/, '');
+  if (!apiKey || !model || !baseUrl) throw new Error('Exact OpenRouter configuration is required');
 
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS);
 
-    const response = await fetch(OPENROUTER_URL, {
+    const response = await fetch(`${baseUrl}/chat/completions`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${apiKey}`,
@@ -63,7 +54,8 @@ async function queryOpenRouter(systemPrompt, userPrompt, options = {}) {
     }
 
     const data = await response.json();
-    const content = data.choices?.[0]?.message?.content || '';
+    const content = String(data.choices?.[0]?.message?.content || '').trim();
+    if (!content) throw new Error('OpenRouter returned empty content');
 
     return {
       success: true,
@@ -78,17 +70,8 @@ async function queryOpenRouter(systemPrompt, userPrompt, options = {}) {
     } else {
       console.error('OpenRouter error:', error.message);
     }
-    return {
-      success: false,
-      error: 'AI request failed',
-      fallback: true,
-      data: generateFallbackResponse(userPrompt),
-    };
+    throw error;
   }
-}
-
-function generateFallbackResponse(userPrompt) {
-  return `AI Analysis (Demo Mode - Configure API key for live results)\n\nThis is a demonstration response. To enable real AI-powered analysis:\n1. Get an API key from openrouter.ai\n2. Add it to your .env file as OPENROUTER_API_KEY\n3. Restart the application`;
 }
 
 module.exports = { queryOpenRouter, parseAIJson };
