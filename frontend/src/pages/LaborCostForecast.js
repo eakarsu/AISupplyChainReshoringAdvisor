@@ -1,6 +1,37 @@
 import React, { useState } from 'react';
 import api from '../services/api';
 import AiAnalysisDisplay from '../components/AiAnalysisDisplay';
+import FullFieldPresets from '../components/FullFieldPresets';
+
+const PRESETS = [
+  {
+    "label": "US semiconductor hiring",
+    "values": {
+      "country": "United States",
+      "region": "Arizona",
+      "industry": "Semiconductor manufacturing",
+      "horizon_years": 5
+    }
+  },
+  {
+    "label": "Mexico auto assembly",
+    "values": {
+      "country": "Mexico",
+      "region": "Nuevo León",
+      "industry": "Automotive assembly",
+      "horizon_years": 7
+    }
+  },
+  {
+    "label": "Canada battery production",
+    "values": {
+      "country": "Canada",
+      "region": "Ontario",
+      "industry": "Battery manufacturing",
+      "horizon_years": 4
+    }
+  }
+];
 
 export default function LaborCostForecast() {
   const [form, setForm] = useState({
@@ -44,6 +75,7 @@ export default function LaborCostForecast() {
       </div>
 
       <form onSubmit={handleSubmit} style={{ background: '#fff', padding: 24, borderRadius: 12, marginBottom: 24, border: '1px solid #e5e7eb' }}>
+        <FullFieldPresets value={form} presets={PRESETS} disabled={loading} onChange={(next) => { setForm(next); setResult(null); }} />
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 14 }}>
           <div className="form-group">
             <label>Country *</label>
@@ -76,10 +108,10 @@ export default function LaborCostForecast() {
         </div>
       )}
 
-      {result && !loading && (
+      {result !== null && !loading && (
         <div className="ai-result">
           <div className="ai-result-header"><h3>Forecast</h3></div>
-          <AiAnalysisDisplay content={typeof result === 'string' ? result : JSON.stringify(result, null, 2)} />
+          <AiAnalysisDisplay content={result} />
         </div>
       )}
     </div>

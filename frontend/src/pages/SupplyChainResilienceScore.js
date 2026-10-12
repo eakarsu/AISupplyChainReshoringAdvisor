@@ -1,6 +1,37 @@
 import React, { useState } from 'react';
 import api from '../services/api';
 import AiAnalysisDisplay from '../components/AiAnalysisDisplay';
+import FullFieldPresets from '../components/FullFieldPresets';
+
+const PRESETS = [
+  {
+    "label": "Electronics sourcing",
+    "values": {
+      "supply_chain": "{\"product\":\"industrial control boards\",\"assembly\":\"United States\",\"tiers\":3}",
+      "suppliers": "[{\"name\":\"Example PCB fabricator\",\"country\":\"Mexico\",\"share_pct\":60},{\"name\":\"Example backup fabricator\",\"country\":\"United States\",\"share_pct\":40}]",
+      "single_points_of_failure": "[\"One qualified power-management chip supplier\"]",
+      "geographies": "[\"United States\",\"Mexico\",\"Taiwan\"]"
+    }
+  },
+  {
+    "label": "Battery materials",
+    "values": {
+      "supply_chain": "{\"product\":\"battery modules\",\"assembly\":\"Canada\",\"tiers\":4}",
+      "suppliers": "[{\"name\":\"Example cell supplier\",\"country\":\"South Korea\",\"share_pct\":70},{\"name\":\"Example alternate cell supplier\",\"country\":\"Japan\",\"share_pct\":30}]",
+      "single_points_of_failure": "[\"Single electrolyte qualification pathway\"]",
+      "geographies": "[\"Canada\",\"South Korea\",\"Japan\"]"
+    }
+  },
+  {
+    "label": "Medical devices",
+    "values": {
+      "supply_chain": "{\"product\":\"diagnostic devices\",\"assembly\":\"United States\",\"tiers\":3}",
+      "suppliers": "[{\"name\":\"Example precision molding supplier\",\"country\":\"Mexico\",\"share_pct\":55},{\"name\":\"Example domestic molding supplier\",\"country\":\"United States\",\"share_pct\":45}]",
+      "single_points_of_failure": "[\"One sterilization provider for final packaging\"]",
+      "geographies": "[\"United States\",\"Mexico\",\"Ireland\"]"
+    }
+  }
+];
 
 export default function SupplyChainResilienceScore() {
   const [form, setForm] = useState({
@@ -49,6 +80,7 @@ export default function SupplyChainResilienceScore() {
       </div>
 
       <form onSubmit={handleSubmit} style={{ background: '#fff', padding: 24, borderRadius: 12, marginBottom: 24, border: '1px solid #e5e7eb' }}>
+        <FullFieldPresets value={form} presets={PRESETS} disabled={loading} onChange={(next) => { setForm(next); setResult(null); }} />
         <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 14 }}>
           <div className="form-group">
             <label>Supply Chain (JSON or text) *</label>
@@ -81,10 +113,10 @@ export default function SupplyChainResilienceScore() {
         </div>
       )}
 
-      {result && !loading && (
+      {result !== null && !loading && (
         <div className="ai-result">
           <div className="ai-result-header"><h3>Resilience Score</h3></div>
-          <AiAnalysisDisplay content={typeof result === 'string' ? result : JSON.stringify(result, null, 2)} />
+          <AiAnalysisDisplay content={result} />
         </div>
       )}
     </div>

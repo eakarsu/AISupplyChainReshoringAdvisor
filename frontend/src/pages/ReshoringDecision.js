@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
 import api from '../services/api';
+import FullFieldPresets from '../components/FullFieldPresets';
+import AIReport from '../components/AIReport';
+
+const QUANTITY_PRESETS = [
+  { label: 'Small production run', values: { quantity: '2500' } },
+  { label: 'Regional production', values: { quantity: '12000' } },
+  { label: 'High-volume production', values: { quantity: '75000' } },
+];
 
 function ReshoringDecision() {
   const [productSku, setProductSku] = useState('');
@@ -33,6 +41,8 @@ function ReshoringDecision() {
         AI-powered analysis comparing offshore vs. domestic production with 5-year ROI projection.
       </p>
 
+      <FullFieldPresets value={{ productSku, quantity }} presets={QUANTITY_PRESETS} disabled={loading} description="Examples fill annual quantity and preserve your selected product SKU." onChange={(next) => { setProductSku(next.productSku); setQuantity(next.quantity); setResult(null); }} />
+      <p className="ai-hint">Select or enter an existing product SKU. Examples preserve it and fill annual quantity; no product record is invented.</p>
       <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
         <div style={{ flex: 1, minWidth: '200px' }}>
           <label style={{ fontWeight: 600, display: 'block', marginBottom: '0.4rem' }}>Product SKU *</label>
@@ -180,6 +190,7 @@ function ReshoringDecision() {
           </div>
         </div>
       )}
+      {analysis !== null && analysis !== undefined && <AIReport response={analysis} title="Complete reshoring analysis" />}
     </div>
   );
 }

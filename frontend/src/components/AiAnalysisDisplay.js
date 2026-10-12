@@ -1,8 +1,14 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
+import AIReport from './AIReport';
 
 export default function AiAnalysisDisplay({ content }) {
-  if (!content) return null;
+  if (content === null || content === undefined) return null;
+  if (typeof content !== 'string') return <AIReport response={content} />;
+  const candidate = content.trim().replace(/^```(?:json)?\s*\n?([\s\S]*?)\n?```$/i, '$1');
+  if (/^[{\[]/.test(candidate)) {
+    try { return <AIReport response={JSON.parse(candidate)} />; } catch (_) { /* Render provider prose below. */ }
+  }
 
   return (
     <div className="ai-analysis-display">

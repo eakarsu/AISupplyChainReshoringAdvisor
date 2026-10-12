@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
+import FullFieldPresets from '../components/FullFieldPresets';
+import AIReport from '../components/AIReport';
 
 const DEFAULT_PARAMS = {
   tariff_rate_pct: 25,
@@ -7,6 +9,12 @@ const DEFAULT_PARAMS = {
   port_availability_pct: 90,
   domestic_labor_premium_pct: 30,
 };
+
+const SCENARIO_PRESETS = [
+  { label: 'Higher electronics tariff', values: { name: 'Electronics tariff sensitivity', description: 'Example: evaluate higher import duties on electronic assemblies and domestic labor tradeoffs.', parameters: { tariff_rate_pct: 35, fx_rate_usd: 1, port_availability_pct: 90, domestic_labor_premium_pct: 30 } } },
+  { label: 'Port disruption', values: { name: 'Pacific port disruption', description: 'Example: test constrained port capacity and alternative sourcing for a temporary disruption.', parameters: { tariff_rate_pct: 25, fx_rate_usd: 1, port_availability_pct: 55, domestic_labor_premium_pct: 30 } } },
+  { label: 'Labor and currency shift', values: { name: 'Labor and currency sensitivity', description: 'Example: compare higher domestic labor costs with a weaker dollar.', parameters: { tariff_rate_pct: 25, fx_rate_usd: 0.92, port_availability_pct: 90, domestic_labor_premium_pct: 42 } } },
+];
 
 function ScenarioBundles() {
   const [scenarios, setScenarios] = useState([]);
@@ -64,11 +72,6 @@ function ScenarioBundles() {
     setForm(prev => ({ ...prev, parameters: { ...prev.parameters, [key]: parseFloat(value) || value } }));
   };
 
-  const riskColor = (level) => {
-    const map = { LOW: '#10b981', MEDIUM: '#f59e0b', HIGH: '#ef4444', CRITICAL: '#7f1d1d' };
-    return map[level] || '#6b7280';
-  };
-
   return (
     <div style={{ padding: '1.5rem', maxWidth: '1000px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
@@ -90,6 +93,7 @@ function ScenarioBundles() {
       {showForm && (
         <div style={{ border: '1px solid #e5e7eb', borderRadius: '8px', padding: '1.5rem', marginBottom: '1.5rem', background: '#F9FAFB' }}>
           <h3 style={{ margin: '0 0 1rem' }}>New Scenario</h3>
+          <FullFieldPresets value={form} presets={SCENARIO_PRESETS} disabled={creating} onChange={setForm} />
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
             <div>
               <label style={{ fontWeight: 600, display: 'block', marginBottom: '0.4rem' }}>Name *</label>
@@ -225,52 +229,7 @@ function ScenarioBundles() {
               <button onClick={() => setSelectedResult(null)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer' }}>×</button>
             </div>
 
-            {selectedResult.analysis && (
-              <div>
-                {selectedResult.analysis.risk_level && (
-                  <div style={{ marginBottom: '1rem' }}>
-                    <span style={{
-                      background: riskColor(selectedResult.analysis.risk_level),
-                      color: 'white', padding: '0.3rem 0.75rem', borderRadius: '100px', fontWeight: 600, fontSize: '0.9rem'
-                    }}>
-                      Risk: {selectedResult.analysis.risk_level}
-                    </span>
-                  </div>
-                )}
-
-                {selectedResult.analysis.vs_baseline && (
-                  <div style={{ marginBottom: '1.5rem' }}>
-                    <h4>vs. Baseline</h4>
-                    <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-                      {Object.entries(selectedResult.analysis.vs_baseline).map(([k, v]) => (
-                        <div key={k} style={{ background: '#F3F4F6', borderRadius: '6px', padding: '0.5rem 1rem', textAlign: 'center' }}>
-                          <div style={{ fontWeight: 700, color: v > 0 ? '#ef4444' : '#10b981' }}>{v > 0 ? '+' : ''}{v}%</div>
-                          <div style={{ fontSize: '0.8rem', color: '#6b7280' }}>{k.replace(/_/g, ' ')}</div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {selectedResult.analysis.estimated_annual_impact_usd && (
-                  <p><strong>Estimated Annual Impact:</strong> ${selectedResult.analysis.estimated_annual_impact_usd?.toLocaleString()}</p>
-                )}
-
-                {selectedResult.analysis.key_findings?.length > 0 && (
-                  <div style={{ marginBottom: '1rem' }}>
-                    <h4>Key Findings</h4>
-                    <ul>{selectedResult.analysis.key_findings.map((f, i) => <li key={i}>{f}</li>)}</ul>
-                  </div>
-                )}
-
-                {selectedResult.analysis.recommendations?.length > 0 && (
-                  <div>
-                    <h4>Recommendations</h4>
-                    <ul>{selectedResult.analysis.recommendations.map((r, i) => <li key={i}>{r}</li>)}</ul>
-                  </div>
-                )}
-              </div>
-            )}
+            {selectedResult.analysis !== null && selectedResult.analysis !== undefined && <AIReport response={selectedResult.analysis} title="Scenario analysis" />}
           </div>
         </div>
       )}

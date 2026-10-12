@@ -1,6 +1,46 @@
 import React, { useState } from 'react';
 import api from '../services/api';
 import AiAnalysisDisplay from '../components/AiAnalysisDisplay';
+import FullFieldPresets from '../components/FullFieldPresets';
+
+const PRESETS = [
+  {
+    "label": "China electronics imports",
+    "values": {
+      "origin_country": "China",
+      "destination_country": "United States",
+      "hs_code": "8534.00",
+      "product_description": "Printed circuit boards",
+      "annual_units": "120000",
+      "unit_cost_usd": "18.50",
+      "horizon_years": 3
+    }
+  },
+  {
+    "label": "Mexico auto parts",
+    "values": {
+      "origin_country": "Mexico",
+      "destination_country": "United States",
+      "hs_code": "8708.99",
+      "product_description": "Automotive components",
+      "annual_units": "50000",
+      "unit_cost_usd": "42.00",
+      "horizon_years": 5
+    }
+  },
+  {
+    "label": "Canada battery materials",
+    "values": {
+      "origin_country": "Canada",
+      "destination_country": "United States",
+      "hs_code": "8507.60",
+      "product_description": "Lithium-ion battery modules",
+      "annual_units": "24000",
+      "unit_cost_usd": "280.00",
+      "horizon_years": 4
+    }
+  }
+];
 
 export default function TariffImpactForecast() {
   const [form, setForm] = useState({
@@ -50,6 +90,7 @@ export default function TariffImpactForecast() {
       </div>
 
       <form onSubmit={handleSubmit} style={{ background: '#fff', padding: 24, borderRadius: 12, marginBottom: 24, border: '1px solid #e5e7eb' }}>
+        <FullFieldPresets value={form} presets={PRESETS} disabled={loading} onChange={(next) => { setForm(next); setResult(null); }} />
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 14 }}>
           <div className="form-group">
             <label>Origin Country *</label>
@@ -94,10 +135,10 @@ export default function TariffImpactForecast() {
         </div>
       )}
 
-      {result && !loading && (
+      {result !== null && !loading && (
         <div className="ai-result">
           <div className="ai-result-header"><h3>Forecast</h3></div>
-          <AiAnalysisDisplay content={typeof result === 'string' ? result : JSON.stringify(result, null, 2)} />
+          <AiAnalysisDisplay content={result} />
         </div>
       )}
     </div>

@@ -117,7 +117,7 @@ export default function DetailPage({ feature }) {
               {analyzing ? 'Analyzing...' : 'Run Analysis'}
             </button>
           </div>
-          {item.ai_analysis ? (
+          {item.ai_analysis !== null && item.ai_analysis !== undefined && item.ai_analysis !== '' ? (
             <AiAnalysisDisplay content={item.ai_analysis} />
           ) : (
             <div className="ai-empty">

@@ -1,6 +1,34 @@
 import React, { useState } from 'react';
 import api from '../services/api';
 import AiAnalysisDisplay from '../components/AiAnalysisDisplay';
+import FullFieldPresets from '../components/FullFieldPresets';
+
+const PRESETS = [
+  {
+    "label": "Reno electronics site",
+    "values": {
+      "siteName": "Reno electronics assembly site",
+      "location": "Reno, Nevada",
+      "notes": "Example greenfield electronics assembly site. Assess water, power, wildfire exposure, and logistics access."
+    }
+  },
+  {
+    "label": "Monterrey automotive site",
+    "values": {
+      "siteName": "Monterrey automotive components site",
+      "location": "Monterrey, Nuevo León, Mexico",
+      "notes": "Example supplier park location. Review water availability, labor capacity, border transit, and utility reliability."
+    }
+  },
+  {
+    "label": "Ontario battery site",
+    "values": {
+      "siteName": "Ontario battery materials site",
+      "location": "Windsor, Ontario, Canada",
+      "notes": "Example battery materials operation. Review power supply, permitting, workforce, and cross-border shipping."
+    }
+  }
+];
 
 export default function SiteRiskScore() {
   const [form, setForm] = useState({
@@ -41,6 +69,8 @@ export default function SiteRiskScore() {
       </div>
 
       <form onSubmit={handleSubmit} style={{ background: '#fff', padding: 24, borderRadius: 12, marginBottom: 24, border: '1px solid #e5e7eb' }}>
+        <FullFieldPresets value={form} presets={PRESETS} disabled={loading} description="Examples fill site details and preserve any selected site ID." onChange={(next) => { setForm(next); setResult(null); }} />
+        <p className="ai-hint">An existing site ID stays selected. Clear it to score the example site details instead.</p>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 14 }}>
           <div className="form-group">
             <label>Existing Site ID (optional)</label>
@@ -73,10 +103,10 @@ export default function SiteRiskScore() {
         </div>
       )}
 
-      {result && !loading && (
+      {result !== null && !loading && (
         <div className="ai-result">
           <div className="ai-result-header"><h3>Risk Score</h3></div>
-          <AiAnalysisDisplay content={typeof result === 'string' ? result : JSON.stringify(result, null, 2)} />
+          <AiAnalysisDisplay content={result} />
         </div>
       )}
     </div>

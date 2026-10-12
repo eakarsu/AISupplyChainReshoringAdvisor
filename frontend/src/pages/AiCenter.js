@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import api from '../services/api';
 import AiAnalysisDisplay from '../components/AiAnalysisDisplay';
+import FullFieldPresets from '../components/FullFieldPresets';
 
 const AI_TOOLS = [
   { key: 'chat', label: 'AI Chat Assistant', icon: '💬', description: 'Ask any supply chain reshoring question', endpoint: '/ai-center/chat', field: 'message', responseKey: 'response' },
@@ -20,6 +21,34 @@ const REPORT_TYPES = [
   'Workforce Readiness Report',
   'Market Intelligence Brief',
 ];
+
+const TOOL_PRESETS = {
+  chat: [
+    ['Semiconductor sourcing', 'What risks and lead-time tradeoffs should a US electronics manufacturer assess before qualifying domestic semiconductor suppliers?'],
+    ['Battery materials', 'Compare practical sourcing risks for Canadian and US battery materials, including permitting and supplier concentration.'],
+    ['Medical device suppliers', 'What questions should a medical device company ask when moving precision component sourcing from Asia to Mexico?'],
+  ],
+  report: [
+    ['Executive semiconductor review', 'Assess a hypothetical US semiconductor assembly reshoring plan: supplier qualification, workforce needs, capital costs, and three decisions for executives.'],
+    ['Supplier evaluation', 'Compare two hypothetical PCB suppliers in Mexico and the United States on capacity, quality, logistics, and continuity risk.'],
+    ['Workforce readiness', 'Outline workforce planning for a hypothetical battery module plant in Ontario, including hiring, training, and schedule assumptions.'],
+  ],
+  scenario: [
+    ['Tariff increase', 'Simulate a 10 percentage point tariff increase on imported printed circuit boards and compare domestic assembly options.'],
+    ['Port disruption', 'Simulate a four-week Pacific port disruption for an electronics manufacturer with limited safety stock.'],
+    ['Labor shortage', 'Simulate a 15% skilled labor shortage during the first year of a new automotive components plant.'],
+  ],
+  market: [
+    ['US electronics', 'Summarize US electronics manufacturing demand signals and identify evidence needed before an investment decision.'],
+    ['Mexico automotive', 'Assess automotive component supplier capacity and workforce considerations in Nuevo León.'],
+    ['Canada batteries', 'Outline battery manufacturing market signals in Ontario and list data that should be verified.'],
+  ],
+  risk: [
+    ['Electronics supply chain', 'Review a hypothetical electronics supply chain with PCB sourcing in Mexico, chips from Taiwan, and final assembly in Arizona.'],
+    ['Battery modules', 'Review a hypothetical Ontario battery module operation with cell imports from South Korea and one electrolyte source.'],
+    ['Medical devices', 'Review a hypothetical US medical device assembler using precision molding in Mexico and one sterilization provider.'],
+  ],
+};
 
 export default function AiCenter() {
   const [activeTool, setActiveTool] = useState('chat');
@@ -119,6 +148,7 @@ export default function AiCenter() {
               </div>
             )}
 
+            <FullFieldPresets value={{ input, reportType }} presets={TOOL_PRESETS[activeTool].map(([label, value], index) => ({ label, values: { input: value, ...(activeTool === 'report' ? { reportType: [REPORT_TYPES[0], REPORT_TYPES[1], REPORT_TYPES[6]][index] } : {}) } }))} disabled={loading} onChange={(next) => { setInput(next.input); setReportType(next.reportType); setResult(null); }} />
             <div className="ai-input-area">
               <textarea
                 value={input}
@@ -141,11 +171,11 @@ export default function AiCenter() {
                 <div className="ai-loading-spinner" />
                 <p>AI is analyzing your request...</p>
               </div>
-            ) : result ? (
+            ) : result !== null ? (
               <div className="ai-result">
                 <div className="ai-result-header">
                   <h3>AI Response</h3>
-                  <button className="btn btn-sm" onClick={() => navigator.clipboard.writeText(result)}>
+                  <button className="btn btn-sm" onClick={() => navigator.clipboard.writeText(typeof result === 'string' ? result : JSON.stringify(result, null, 2))}>
                     Copy
                   </button>
                 </div>
