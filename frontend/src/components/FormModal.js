@@ -27,7 +27,7 @@ export default function FormModal({ feature, item, onSave, onClose, fieldConfig 
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={e => e.stopPropagation()}>
+      <div className="modal-content" role="dialog" aria-modal="true" onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h2>{item ? 'Edit' : 'New'} {feature.label}</h2>
           <button className="modal-close" onClick={onClose}>×</button>

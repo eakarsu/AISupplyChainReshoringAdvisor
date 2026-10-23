@@ -1,4 +1,5 @@
 import AIReportLibrary from "./components/AIReportLibrary";
+import FeaturePackPanel from './components/FeaturePackPanel';
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import api from './services/api';
@@ -235,6 +236,7 @@ function AppLayout() {
           <Route path="/site-risk-score" element={<SiteRiskScore />} />
           <Route path="/tariff-impact-forecast" element={<TariffImpactForecast />} />
           <Route path="/supply-chain-resilience-score" element={<SupplyChainResilienceScore />} />
+          <Route path="/tasks" element={<ProtectedRoute><FeaturePackPanel /></ProtectedRoute>} />
           <Route path="/custom-views" element={<CustomViewsPage />} />
           <Route path="/port-drayage-constraint" element={<PortDrayageConstraint />} />
           {/* // === Batch 08 Gaps & Frontend Mounts === */}

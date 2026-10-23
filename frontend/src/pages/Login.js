@@ -7,12 +7,11 @@ export default function Login({ onLogin }) {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
+  const submitLogin = async (loginEmail, loginPassword) => {
     setLoading(true);
     setError('');
     try {
-      const res = await api.post('/auth/login', { email, password });
+      const res = await api.post('/auth/login', { email: loginEmail, password: loginPassword });
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('user', JSON.stringify(res.data.user));
       onLogin();
@@ -20,6 +19,22 @@ export default function Login({ onLogin }) {
       setError(err.response?.data?.error || 'Login failed');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    await submitLogin(email, password);
+  };
+
+  const handleDemoLogin = async () => {
+    const demoEmail = process.env.REACT_APP_DEMO_EMAIL || '';
+    const demoPassword = process.env.REACT_APP_DEMO_PASSWORD || '';
+    setEmail(demoEmail);
+    setPassword(demoPassword);
+    setError('');
+    if (demoEmail && demoPassword) {
+      await submitLogin(demoEmail, demoPassword);
     }
   };
 
@@ -64,7 +79,7 @@ export default function Login({ onLogin }) {
 
             <button
               type="button"
-              onClick={() => { setEmail(process.env.REACT_APP_DEMO_EMAIL || ''); setPassword(process.env.REACT_APP_DEMO_PASSWORD || ''); setError(''); }}
+              onClick={handleDemoLogin}
               disabled={loading || process.env.REACT_APP_ENABLE_DEMO_CREDENTIAL_AUTOFILL !== 'true' || !process.env.REACT_APP_DEMO_EMAIL || !process.env.REACT_APP_DEMO_PASSWORD}
               aria-label="Fill demo credentials"
               style={{ width: '100%', marginBottom: '12px', padding: '10px 14px', borderRadius: '8px', border: '1px solid currentColor', background: 'transparent', cursor: 'pointer' }}

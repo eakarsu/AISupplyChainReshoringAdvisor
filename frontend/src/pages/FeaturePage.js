@@ -9,6 +9,7 @@ export default function FeaturePage({ feature }) {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
   const [editItem, setEditItem] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -108,7 +109,7 @@ export default function FeaturePage({ feature }) {
             </thead>
             <tbody>
               {filteredItems.map(item => (
-                <tr key={item.id} onClick={() => navigate(`/${feature.key}/${item.id}`)} className="clickable-row">
+                <tr key={item.id} onClick={() => setSelectedItem(item)} className="clickable-row">
                   {displayFields.map(f => (
                     <td key={f.key}>
                       {f.render ? f.render(item[f.key], item) : (
@@ -138,6 +139,30 @@ export default function FeaturePage({ feature }) {
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {selectedItem && (
+        <div className="modal-overlay" style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }} onClick={() => setSelectedItem(null)}>
+          <div className="modal-content" role="dialog" aria-modal="true" style={{ background: "#1e293b", color: "#f8fafc", borderRadius: 14, padding: 24, width: "min(640px, 92vw)", maxHeight: "85vh", overflow: "auto", border: "1px solid #334155" }} onClick={e => e.stopPropagation()}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+              <h2 style={{ margin: 0 }}>{feature.icon} {selectedItem[fieldConfig.titleField] || selectedItem.name || selectedItem.title || `Record #${selectedItem.id}`}</h2>
+              <button type="button" className="btn btn-sm" onClick={() => setSelectedItem(null)}>✕</button>
+            </div>
+            <div className="detail-fields" style={{ display: "grid", gap: 10, marginBottom: 20 }}>
+              {Object.entries(selectedItem).filter(([k]) => !["id", "created_at", "ai_analysis"].includes(k)).map(([k, v]) => (
+                <div key={k} className="detail-field" style={{ display: "flex", justifyContent: "space-between", gap: 12, padding: "6px 0", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+                  <label style={{ color: "#94a3b8", fontSize: 13 }}>{k.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase())}</label>
+                  <div className="detail-value" style={{ fontSize: 14 }}>{String(v ?? "—")}</div>
+                </div>
+              ))}
+            </div>
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: 10 }}>
+              <button type="button" className="btn btn-primary" onClick={() => { setEditItem(selectedItem); setSelectedItem(null); setShowModal(true); }}>Edit</button>
+              <button type="button" className="btn btn-delete" onClick={(e) => { const id = selectedItem.id; setSelectedItem(null); handleDelete(id, e); }}>Delete</button>
+              <button type="button" className="btn btn-secondary" onClick={() => setSelectedItem(null)}>Cancel</button>
+            </div>
+          </div>
         </div>
       )}
 

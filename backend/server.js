@@ -48,6 +48,8 @@ app.use('/api/quality-assessments', require('./routes/qualityAssessments'));
 app.use('/api/environmental-impacts', require('./routes/environmentalImpacts'));
 app.use('/api/trade-agreements', require('./routes/tradeAgreements'));
 app.use('/api/budget-plans', require('./routes/budgetPlans'));
+app.use('/api/tasks', require('./routes/featurePack'));
+app.use('/api/budget-plans', require('./routes/budgetPlans'));
 if (generatedRoutesEnabled) app.use('/api/ai-center', require('./routes/aiCenter'));
 if (generatedRoutesEnabled) app.use('/api/ai', require('./routes/aiAdvanced'));
 
